@@ -1,0 +1,366 @@
+﻿@startuml
+abstract class "Unidad"{
+- nombre: string 
+- nivelAtaque: double
+- nivelDefensa: double
+- puntosVida: double
+- exp: int
++ Unidad(String nombre, double puntosVida, double nivelAtaque, double nivelDefensa, int exp): Unidad
++ getNombre(): String
++ setNombre(String nombre): void
+
+
++ getPuntosVida(): double
++ setNombre(double puntosVida): void
+
+
++ getNivelAtaque(): double
++ setNivelAtaque(double nivelAtaque):void
+
+
++ getNivelDefensa():double
++ setNivelDefensa(double nivelDefensa): void
+
+
++ getExp():int
++ setExp(int exp): void
+
+
++ estaVivo(): boolean
++ {abstract} atacar(Unidad defensor,int cantGolpes):double
++ {abstract} recibirDaño(Unidad atacante,double daño):void
+}
+
+
+abstract class "Heroe"{
+- agilidad: double
+- punteria: double
+
+
++ Heroe(String nombre, double puntosVida, double nivelAtaque, double nivelDefensa, double agilidad, double punteria, int exp): Heroe
+
+
++ getAgilidad(): double
++ setAgilidad(double agilidad): void
+
+
++ double getPunteria(): double
++ setPunteria(double punteria): void
+
+
++ ganarExperiencia(int exp): void
+}
+Class Mago{
++ Mago(String nombre): Mago
++ atacar(Unidad defensor,int cantGolpes): double
++ recibirDaño(Unidad atacante,double daño): double
+}
+Class Arquero{
++ Arquero(String nombre): Arquero
+- random: Random
++ atacar(Unidad defensor,int cantGolpes): double
++ recibirDaño(Unidad atacante,double daño): double
+}
+Class Guerrero{
++ Guerrero(String nombre):Guerrero
++ atacar(Unidad defensor,int cantGolpes): double
++ recibirDaño(Unidad atacante,double daño): double
+}
+Unidad<|-- Heroe
+Unidad<|-- Criatura
+Heroe <|-- Guerrero 
+Heroe <|-- Arquero
+Heroe <|-- Mago
+
+
+abstract class Criatura{
++ Criatura(String nombre, double puntosVida, double nivelAtaque, double nivelDefensa, int exp):Criatura
+}
+
+
+Class Dragon{
++ Dragon(String nombre):Dragon
++ atacar(Unidad defensor,int cantGolpes): double
++ recibirDaño(Unidad atacante,double daño): void
+}
+Class Troll{
++ Troll(String nombre):Troll
++ atacar(Unidad defensor,int cantGolpes): double
++ recibirDaño(Unidad atacante,double daño): void
+}
+Class Espectro{
++ Espectro(String nombre):Espectro
++ atacar(Unidad defensor,int cantGolpes): double
++ recibirDaño(Unidad atacante,double daño): void
+}
+Criatura <|-- Dragon
+Criatura <|-- Troll
+Criatura <|-- Espectro
+
+
+Class Pelea{
+- heroe: Heroe
+- criaturas: List<Criatura>
+- cantGolpes: int
+- misionesSecundarias: List<MisionSecundaria>
+- ubicacion: Ubicacion
+- ataqueBase: double
++ Pelea(Heroe heroe, List<Criatura> criaturas, List<MisionSecundaria> misionesSecundarias, Ubicacion ubicacion): Pelea
++ iniciarPelea(): boolean
++ getCantGolpes():int
++ verificarInventario(): void
+}
+Pelea "1" o-- "1" Heroe: Se conforma
+Pelea "1" o-- "1..*" Criatura: Se conforma
+Pelea "1" o-- "1" Ubicacion: Se ejecuta
+Pelea "1" o-- "1" MisionSecundaria
+
+
+Class Mapa{
+- mapaJuego: GrafoTDA
+- ubicacionActual: Ubicacion
++ Mapa():Mapa
++ getMapaJuego(): GrafoTDA
++ agregarUbicacionAMapa(Ubicacion ubicacion): void
++ agregarCamino(Ubicacion ubicacion_1, Ubicacion ubicacion_2): void
++ mostrarUbicacionesCercanas(Ubicacion ubicacionActual): List<Ubicacion>
++ puedeViajar(Ubicacion origen, Ubicacion destino): boolean
++ viajar(Ubicacion ubicacion): void
++ getUbicacionActual(): Ubicacion
++ setUbicacionActual(Ubicacion ubicacionActual): void
+}
+Mapa"1" *-- "1..*" Ubicacion: Contiene
+Mapa o-- GrafoTDA
+
+
+interface GrafoTDA{
+- InicializarGrafo():void
+- AgregarVertice(Ubicacion ubicacion):void
+- EliminarVertice (Ubicacion v): void
+- Vertices(): ConjuntoTDA
+- AgregarArista(Ubicacion v1 , Ubicacion v2 , int peso): void
+- EliminarArista( Ubicacion v1 , Ubicacion v2 )void
+- ExisteArista( Ubicacion v1 , Ubicacion v2): boolean
+- PesoArista( Ubicacion v1 , Ubicacion v2): int
++ VerticesConAristasDesde(Ubicacion origen): List<Ubicacion>
+}
+class GrafoLA{
+- origen: NodoGrafo
+- Vert2Nodo(Ubicacion ubicacion): NodoGrafo
+- EliminarAristaNodo (NodoGrafo nodo, Ubicacion ubicacion): void
+}
+
+
+GrafoTDA o-- NodoGrafo
+Ubicacion *-- NodoGrafo
+GrafoTDA <|- GrafoLA
+
+
+class NodoArista{
+- etiqueta: int
+- nodoDestino: NodoGrafo
+- sigArista: NodoArista
+}
+class NodoGrafo {
+- ubicacion: Ubicacion
+- arista: NodoArista
+- sigNodo: NodoGrafo
+}
+NodoGrafo *-- NodoArista
+
+
+interface ConjuntoTDA{
+- inicializarConjunto(): void
+- agregar(Ubicacion ubicacion): void
+- sacar(Ubicacion ubicacion): void
+- elegir(): Ubicacion
+- conjuntoVacio(): boolean
+}
+
+
+class Conjunto {
++ Conjunto(): Conjunto
+- nodo: Nodo
+- origen: Nodo
++ inicializarConjunto(): void
++ agregar(Ubicacion ubicacion): void
++ elegir(): Ubicacion
++ conjuntoVacio(): boolean
+- pertenece(Ubicacion ubicacion): boolean
+- cantElementos(Nodo origen): int
+}
+
+
+class Nodo {
+- valor: Ubicacion
+- sig: Nodo
+}
+Conjunto *--Nodo
+
+
+ConjuntoTDA <|- Conjunto
+
+
+abstract Class Ubicacion{
+- nombre: String
+- heroe: Heroe
++ Ubicacion(String nombre,Heroe heroe): Heroe
++ getNombre(): String
++ setNombre(String nombre): void
++ getHeroe(): Heroe
++ agregarCriaturaALista(Criatura criatura): void
++ setHeroe(Heroe heroe): void
++ getCriaturasFromLista(): List<Criatura>
++ setCriaturasVencidasTrue(): void
++ getCriaturasVencidas(): boolean
++ esTesoro(): boolean
+}
+Ubicacion o-- Heroe
+
+
+Class UbicacionHostil{
+- esTesoro: boolean
+- criaturasVencidas: boolean
+- criaturas: List<Criatura>
++ UbicacionHostil(String nombre, Heroe heroe, boolean esTesoro, boolean criaturasVencidas):UbicacionHostil
++ getCriaturasFromLista(): List<Criatura>
++ setCriaturasVencidasTrue(): void
++ getCriaturasVencidas(): boolean
++ esTesoro(): boolean
+}
+UbicacionHostil "1" o-- "1..*" Criatura
+
+
+Class UbicacionNeutral{
+- misiones: List<MisionSecundaria> 
++ UbicacionNeutral(String nombre, Heroe heroe, List<MisionSecundaria> misiones):UbicacionNeutral
++ descansarYa(Heroe heroe): void
++ subirAtaque(Heroe heroe): void
++ subirVida(Heroe heroe): void
++ subirDefensa(Heroe heroe): void
++ reclamarRecompensas(MisionSecundaria mision, Heroe heroe): void
+}
+
+
+Ubicacion <|-- UbicacionHostil
+Ubicacion <|-- UbicacionNeutral
+
+
+UbicacionNeutral"1" o-- "1.." MisionSecundaria: Contiene
+MisionSecundaria "1" *-- "1" Recompensa: Contiene
+
+
+abstract Class MisionSecundaria{
+- nombre: String
+- objetivo: String
+- estado: String
+- recompensa: Recompensa
++ MisionSecundaria(String nombre, String objetivo, Recompensa recompensa): MisionSecundaria
++ completarMision(): void
++ verificarProgreso(Criatura criatura, Ubicacion ubicacion): void
++ estaCompletada(): String
++ reclamarRecompensa(): void
++ getNombre(): String
++ getObjetivo():String
++ getEstado():String
++ getRecompensa(): Recompensa
++ setRecompensa(Recompensa recompensa): void
++ actualizarRecompensas(): void
+}
+
+
+class MisionRecuperarAmuleto{
+- nombreUbicacionObjetivo: String
+- MisionRecuperarAmuleto(String nombre, String objetivo, Recompensa recompensa): MisionRecuperarAmuleto
+}
+class MisionPantanoOscuro{
+- nombreUbicacionObjetivo: String
+- contadorMuertes: int
+- MisionPantanoOscuro(String nombre, String objetivo, Recompensa recompensa): MisionPantanoOscuro
+}
+class MisionDerrotarDragon{
+- nombreUbicacionObjetivo: String
+- MisionDerrotarDragon(String nombre, String objetivo, Recompensa recompensa): MisionDerrotarDragon
+}
+class MisionAldeaDeLosTrolls{
+- nombreUbicacionObjetivo: String
+- MisionAldeaDeLosTrolls(String nombre, String objetivo, Recompensa recompensa): MisionAldeaDeLosTrolls
+}
+
+
+MisionSecundaria<|-- MisionRecuperarAmuleto
+MisionSecundaria<|-- MisionPantanoOscuro
+MisionSecundaria<|-- MisionDerrotarDragon
+MisionSecundaria<|-- MisionAldeaDeLosTrolls
+
+
+Class Recompensa{
+- nombreObjeto: String
+- valorAtaque: int
+- valorDefensa: int
+- puntosDefensa: int
++ Recompensa(String nombreObjeto, int valorAtaque, int valorDefensa, int puntosDefensa): Recompensa
++ aplicarRecompensa(Heroe heroe): void
++ getDescripcion(): String
+}
+
+
+class Mejoras{
++ static descansar(Heroe heroe): String
++ static mejorarAtaque(Heroe heroe): String
++ static mejorarVida(Heroe heroe): String
++ static mejorarDefensa(Heroe heroe): String
+}
+
+
+class Juego{
+- static instancia: Juego
+- heroe: Heroe
++ mapa: Mapa
+- misiones: List<MisionSecundaria>
+- ubicaciones: List<Ubicacion>
+- criaturas: List<Criatura> 
+- peleaActual: Pelea
+- Juego():Juego
++ static getInstance(): Juego
+- iniciarJuego():void
++ configurarHeroeDesdeUsuario(String nombre, String tipo): void
++ configurarHeroe(String nombre, String tipo): void
++ getHeroe(): Heroe
+- configurarUbicaciones():void
+- crearEnemigos():void
+- agregarEnemigosAUbicaciones(): void
+- buscarUbicacion(String nombre): Ubicacion
+- configurarMisiones(): void
++ descansarHeroe():void
++ mejorarAtaqueHeroe():String
++ mejorarVidaHeroe(): String
++ mejorarDefensaHeroe(): String
++ getEstadisticasHeroe(): String
++ getUbicacionActual(): Ubicacion
++ setUbicacionActual(Ubicacion ubicacion): void
++ getUbicaciones():List<Ubicacion>
++ getMisiones(): List<MisionSecundaria>
++ getObjetivo(MisionSecundaria misionSecundaria):String
++ getNombreMision(MisionSecundaria misionSecundaria): String
++ getEstadoMision(MisionSecundaria misionSecundaria): String
++ puedeViajar(Ubicacion origen, Ubicacion destino): boolean
++ getNombreUbicacion(Ubicacion ubicacion): String
++ reclamarRecompensas(MisionSecundaria misionSecundaria): void
++ getCriaturasUbicacionActual(Ubicacion ubicacion): List<Criatura>
++ getNombreCriaturas(List<Criatura> criaturas): List<String>
++ iniciarPelea(Heroe heroe,List<Criatura> criaturas,List<MisionSecundaria> misionesSecundarias, Ubicacion ubicacionActual): boolean
++ getExp(Heroe heroe):double
++ getCriaturasVencidas(Ubicacion ubicacion):boolean
++ getEsTesoro(Ubicacion ubicacion):boolean
++ getEnemigoVencido(Ubicacion ubicacion): boolean
+} 
+GrafoTDA "1" *-- "1" ConjuntoTDA
+Juego "1" *-- "1.." MisionSecundaria
+Juego "1" *-- "1" Heroe
+Juego "1" *-- "1" Mapa
+Juego "1" *-- "1.." Ubicacion
+Juego "1" *-- "1.." Criatura
+Juego "1" *-- "1" Pelea
+UbicacionNeutral o-- Mejoras
+@enduml

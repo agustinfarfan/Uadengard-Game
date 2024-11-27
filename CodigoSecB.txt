@@ -1,0 +1,44 @@
+﻿@startuml
+Juego -> UbicacionNeutral: reclamarRecompensas(MisionSecundaria mision, Heroe heroe): void
+
+
+UbicacionNeutral -> MisionSecundaria: estaCompletada(): String
+
+
+opt estaCompletada
+activate MisionSecundaria
+MisionSecundaria -> MisionSecundaria: getRecompensa(): Recompensa
+MisionSecundaria-->UbicacionNeutral:Recompensa
+deactivate MisionSecundaria
+
+
+UbicacionNeutral -> Recompensa: aplicarRecompensa(Heroe heroe):void
+activate Recompensa
+opt valorAtaque > 0
+Recompensa -> Heroe: getNivelAtaque():double
+Recompensa <-- Heroe: double
+Recompensa -> Heroe: setNivelAtaque():void
+end
+
+
+opt valorDefensa > 0
+Recompensa -> Heroe: getNivelDefensa():double
+Recompensa <-- Heroe: double
+Recompensa -> Heroe: setNivelDefensa():void
+end
+
+
+opt puntosDefensa > 0
+Recompensa -> Heroe: getNivelDefensa():double
+Recompensa <-- Heroe: double
+Recompensa -> Heroe: setNivelDefensa():void
+end
+
+
+deactivate Recompensa
+
+
+end
+
+
+@enduml

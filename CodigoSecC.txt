@@ -1,0 +1,25 @@
+@startuml
+title Canjear puntos de experiencia por una mejora y aplicarla al heroe
+actor Juego
+participant Mejoras
+participant Heroe
+
+
+Juego -> Mejoras : mejorarAtaqueHeroe()
+activate Mejoras
+Mejoras-> Heroe: getExp(): double
+activate Heroe
+
+Heroe --> Mejoras  : exp
+deactivate Heroe
+
+alt si tiene 100 exp o mas 
+Mejoras  -> Heroe : getNivelDeAtaque() double
+activate Heroe
+Heroe   --> Mejoras  : nivelAtaque
+deactivate Heroe
+Mejoras  -> Heroe : setNivelDeAtaque(): void
+else si exp menor a 100
+Mejoras --> Juego : String
+end 
+@enduml

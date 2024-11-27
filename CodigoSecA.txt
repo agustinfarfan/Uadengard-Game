@@ -1,0 +1,75 @@
+@startuml
+title Viajar a una ubicacion y pelear con la criatura (diagramar el caso de un Guerrero peleando contra un Dragón)
+actor Juego
+participant Mapa
+participant Heroe
+
+
+Juego -> Mapa : viajar(Ubicacion ubicacion):void
+activate Mapa
+Mapa -> Mapa : setUbicacionActual(Ubicacion ubicacion)
+deactivate Mapa
+
+Juego -> Mapa : getUbicacionActual(): Ubicacion
+activate Mapa
+Mapa -> Mapa : getUbicacionActual(): Ubicacion
+Mapa-->Juego : ubicacionActual
+deactivate Mapa
+
+Juego -> Ubicacion: getCriaturasUbicacionActual(Ubicacion ubicacion): List<Criatura>
+activate Ubicacion
+Ubicacion -> Ubicacion: getCriaturasFromLista(): List<Criatura>
+Ubicacion --> Juego : criaturas
+deactivate Ubicacion
+
+Juego --> Juego : getMisiones(): List<MisionesSecundaria>
+
+Juego -> Pelea : iniciarPelea(Heroe heroe, List<Criatura> criaturas, List<MisionesSecundaria> misionesSecundarias, Ubicacion ubicacion):boolean
+activate Pelea 
+Pelea -> Heroe: getNivelDeAtaque(): double
+activate Heroe
+Heroe --> Pelea : ataqueBase
+deactivate Heroe
+
+Pelea -> Pelea :  verificarInventario(): void
+loop Criatura in criaturas
+loop while Heroe esta vivo && criatura esta viva
+Pelea -> Heroe: atacar(Criatura criatura, int cantGolpes): double
+activate Heroe
+Heroe --> Pelea : daño
+deactivate Heroe
+
+Pelea -> Criatura : recibirDaño(Heroe heroe,double daño) :void
+
+opt Criatura no esta viva
+Pelea -> Criatura : getExp():double
+activate Criatura
+Criatura --> Pelea : exp 
+deactivate Criatura
+
+Pelea -> Heroe: ganarExp(exp): void
+loop MisionSecundaria en misionesSecundarias
+Pelea -> MisionSecundaria : verificarProgreso(Criatura criatura, Ubicacion ubicacion):void
+end
+
+Pelea -> Pelea : break
+end
+Pelea -> Criatura: atacar(Heroe heroe, int cantGolpes): double 
+activate Criatura
+Criatura--> Pelea : daño
+deactivate Criatura
+Pelea -> Heroe : recibirDaño(Criatura criatura,double daño) :void
+opt Heroe no esta vivo
+Pelea -> Juego  : false
+end
+end
+end
+
+opt Si heroe es mago
+Pelea -> Heroe: setPuntosVida(double 100.00): void
+end
+Pelea -> Heroe: setNivelDeAtaque(ataqueBase): void
+Pelea -> Ubicacion: setCriaturasVencidasTrue():void
+Pelea --> Juego: true
+deactivate Pelea 
+@enduml
